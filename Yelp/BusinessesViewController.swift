@@ -41,34 +41,6 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
             }
         })
         
-        
-        func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-            // When there is no text, filteredBusinesses is the same as the original businesses data
-            if(filteredbusinness == nil) {
-                filteredbusinness = businesses
-            }
-            // The user has entered text into the search box
-            // Use the filter method to iterate over all items in the businesses data
-            // For each item, return true if the item should be included and false if the
-            // item should NOT be included
-            if searchText.isEmpty {
-                businesses = filteredbusinness
-            }
-            else {
-                businesses = businesses.filter({(dataItem: Business) -> Bool in
-                    // If dataItem matches the searchText, return true to include it
-                    if dataItem.name!.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil {
-                        return true
-                    } else {
-                        return false
-                    }
-                })
-            }
-            
-            tableView.reloadData()
-            
-        }
-
        
         
        /* func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
@@ -118,6 +90,34 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
         return cell
         
     }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        // When there is no text, filteredBusinesses is the same as the original businesses data
+        if(filteredbusinness == nil) {
+            filteredbusinness = businesses
+        }
+        // The user has entered text into the search box
+        // Use the filter method to iterate over all items in the businesses data
+        // For each item, return true if the item should be included and false if the
+        // item should NOT be included
+        if searchText.isEmpty {
+            businesses = filteredbusinness
+        }
+        else {
+            businesses = businesses.filter({(dataItem: Business) -> Bool in
+                // If dataItem matches the searchText, return true to include it
+                if dataItem.name!.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil {
+                    return true
+                } else {
+                    return false
+                }
+            })
+        }
+        
+        tableView.reloadData()
+        
+    }
+
 
     /*
     // MARK: - Navigation
