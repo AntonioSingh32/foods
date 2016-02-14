@@ -16,8 +16,6 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
     
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var yelpSearch: UISearchBar!
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +23,12 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
-        self.yelpSearch.delegate = self
+        let yelpbar = UISearchBar()
+        yelpbar.delegate = self
+        
+        yelpbar.sizeToFit()
+        navigationItem.titleView = yelpbar
+        
 
         Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
@@ -39,9 +42,36 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
         })
         
         
-        
-        
         func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+            // When there is no text, filteredBusinesses is the same as the original businesses data
+            if(filteredbusinness == nil) {
+                filteredbusinness = businesses
+            }
+            // The user has entered text into the search box
+            // Use the filter method to iterate over all items in the businesses data
+            // For each item, return true if the item should be included and false if the
+            // item should NOT be included
+            if searchText.isEmpty {
+                businesses = filteredbusinness
+            }
+            else {
+                businesses = businesses.filter({(dataItem: Business) -> Bool in
+                    // If dataItem matches the searchText, return true to include it
+                    if dataItem.name!.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil {
+                        return true
+                    } else {
+                        return false
+                    }
+                })
+            }
+            
+            tableView.reloadData()
+            
+        }
+
+       
+        
+       /* func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
             if searchBar.text!.isEmpty {
                 search = false
                 tableView.reloadData()
@@ -50,7 +80,7 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
                 
                 tableView.reloadData()
             }
-        }
+        } */
 
 /* Example of Yelp search with more search options specified
         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
