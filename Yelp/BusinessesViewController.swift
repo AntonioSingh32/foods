@@ -29,6 +29,12 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
         yelpbar.sizeToFit()
         navigationItem.titleView = yelpbar
         
+        if let yelpbar = navigationController?.navigationBar {
+        yelpbar.setBackgroundImage(UIImage(named: "foodvector"), forBarMetrics: .Default)
+         yelpbar.tintColor = UIColor(red: 1.0, green: 0.25, blue: 0.25, alpha: 0.8)
+        }
+
+        
 
         Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
@@ -41,19 +47,9 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
             }
         })
         
-       
         
-       /* func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-            if searchBar.text!.isEmpty {
-                search = false
-                tableView.reloadData()
-            } else {
-                search = true
-                
-                tableView.reloadData()
-            }
-        } */
-
+        
+       
 /* Example of Yelp search with more search options specified
         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
@@ -63,7 +59,10 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
                 print(business.address!)
             }
         }
+        
 */
+        
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -118,6 +117,7 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
         
     }
 
+    
 
     /*
     // MARK: - Navigation
