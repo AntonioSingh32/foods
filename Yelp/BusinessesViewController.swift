@@ -8,11 +8,13 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController,UITableViewDataSource,UITableViewDelegate, UISearchBarDelegate,UISearchDisplayDelegate{
+class BusinessesViewController: UIViewController,UITableViewDataSource,UITableViewDelegate, UISearchBarDelegate,UISearchDisplayDelegate,UIScrollViewDelegate{
 
     var businesses: [Business]!
-    var search : Bool!
+    var load : Bool! = false
     var filteredbusinness: [Business]!
+    
+    
     
     
     @IBOutlet weak var tableView: UITableView!
@@ -48,6 +50,51 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
         })
         
         
+        func loadMoreData() {
+            
+            let myRequest = NSURLRequest()
+            
+            // ... Create the NSURLRequest (myRequest) ...
+            
+            // Configure session so that completion handler is executed on main UI thread
+            let session = NSURLSession(
+                configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
+                delegate:nil,
+                delegateQueue:NSOperationQueue.mainQueue()
+            )
+            
+            let task : NSURLSessionDataTask = session.dataTaskWithRequest(myRequest,
+                completionHandler: { (data, response, error) in
+                    
+                    // Update flag
+                    self.load = false
+                    
+                    // ... Use the new data to update the data source ...
+                    
+                    // Reload the tableView now that there is new data
+                    self.tableView.reloadData()
+            });
+            task.resume()
+        }
+        
+        
+        func scrollViewDidScroll(scrollView: UIScrollView) {
+            if (!load) {
+                
+                let scrollViewContentHeight = tableView.contentSize.height
+                let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+                
+                if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.dragging) {
+                    
+                    load = true
+                    
+                    self.tableView.reloadData()
+                    self.load = false
+                }
+                
+            }
+            
+        }
         
        
 /* Example of Yelp search with more search options specified
@@ -91,20 +138,17 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
     }
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        // When there is no text, filteredBusinesses is the same as the original businesses data
+
         if(filteredbusinness == nil) {
             filteredbusinness = businesses
         }
-        // The user has entered text into the search box
-        // Use the filter method to iterate over all items in the businesses data
-        // For each item, return true if the item should be included and false if the
-        // item should NOT be included
+       
         if searchText.isEmpty {
             businesses = filteredbusinness
         }
         else {
             businesses = businesses.filter({(dataItem: Business) -> Bool in
-                // If dataItem matches the searchText, return true to include it
+               
                 if dataItem.name!.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil {
                     return true
                 } else {
