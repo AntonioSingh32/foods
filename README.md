@@ -12,6 +12,14 @@ The following **required** functionality is completed:
 - [ ] Custom cells should have the proper Auto Layout constraints.
 - [ ] Search bar should be in the navigation bar (doesn't have to expand to show location like the real Yelp app does).
 
+The following **optional** features are implemented:
+
+- [ ] Search results page
+   - [ ] Infinite scroll for restaurant results.
+
+The following **additional** features are implemented:
+- [ ] MBProgressHUD from Flicks App used for any loading
+
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
