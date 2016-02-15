@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class BusinessesViewController: UIViewController,UITableViewDataSource,UITableViewDelegate, UISearchBarDelegate,UISearchDisplayDelegate,UIScrollViewDelegate{
 
@@ -50,53 +51,7 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
         })
         
         
-        func loadMoreData() {
-            
-            let myRequest = NSURLRequest()
-            
-            // ... Create the NSURLRequest (myRequest) ...
-            
-            // Configure session so that completion handler is executed on main UI thread
-            let session = NSURLSession(
-                configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
-                delegate:nil,
-                delegateQueue:NSOperationQueue.mainQueue()
-            )
-            
-            let task : NSURLSessionDataTask = session.dataTaskWithRequest(myRequest,
-                completionHandler: { (data, response, error) in
-                    
-                    // Update flag
-                    self.load = false
-                    
-                    // ... Use the new data to update the data source ...
-                    
-                    // Reload the tableView now that there is new data
-                    self.tableView.reloadData()
-            });
-            task.resume()
-        }
         
-        
-        func scrollViewDidScroll(scrollView: UIScrollView) {
-            if (!load) {
-                
-                let scrollViewContentHeight = tableView.contentSize.height
-                let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
-                
-                if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.dragging) {
-                    
-                    load = true
-                    
-                    self.tableView.reloadData()
-                    self.load = false
-                }
-                
-            }
-            
-        }
-        
-       
 /* Example of Yelp search with more search options specified
         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
@@ -160,6 +115,49 @@ class BusinessesViewController: UIViewController,UITableViewDataSource,UITableVi
         tableView.reloadData()
         
     }
+
+    func loadMoreData() {
+        
+        let myRequest = NSURLRequest()
+        
+        let session = NSURLSession(
+            configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
+            delegate:nil,
+            delegateQueue:NSOperationQueue.mainQueue()
+        )
+        
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        
+        let task : NSURLSessionDataTask = session.dataTaskWithRequest(myRequest,
+            completionHandler: { (data, response, error) in
+                
+                self.load = false
+                MBProgressHUD.hideHUDForView(self.view, animated: true)
+                
+                self.tableView.reloadData()
+        });
+        task.resume()
+    }
+    
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if (!load) {
+            
+            let scrollViewContentHeight = tableView.contentSize.height
+            let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+            
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.dragging) {
+                
+                load = true
+                
+                self.tableView.reloadData()
+                self.load = false
+            }
+            
+        }
+        
+    }
+    
 
     
 
